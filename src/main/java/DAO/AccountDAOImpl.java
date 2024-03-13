@@ -44,7 +44,7 @@ public class AccountDAOImpl implements AccountDAO {
     @Override
     public Account findAccountByUserName(String username) {
         Connection con = Util.ConnectionUtil.getConnection();
-        String sql = "SELECT * FROM Account WHERE account_id = ?;";
+        String sql = "SELECT * FROM Account WHERE username = ?;";
 
         try {
             PreparedStatement ps = con.prepareStatement(sql);

@@ -12,8 +12,7 @@ public class AccountService {
 
     /**
      * Attempts to create a new user checking if the input is valid and the user doesn't exist
-     * @param username
-     * @param password
+     * @param account from user json (parsed in handler)
      * @return Account representing the new account, return null if checks fail or account already exists
      */
     public Account createAccount(Account account) {
@@ -27,5 +26,19 @@ public class AccountService {
         }
 
         return this.accountDAO.insertAccount(account);
+    }
+
+    /**
+     * Uses user provided account to authenticate and then return an account with a filled in account_id
+     * @param account
+     * @return account representing the fetched account, null if authentication fails
+     */
+    public Account authenticateAccount(Account account) {
+        Account probeAccount = accountDAO.findAccountByUserName(account.getUsername());
+        if (probeAccount != null && 
+        account.getPassword().contentEquals(probeAccount.getPassword())) {
+            return probeAccount;
+        }
+        return null;
     }
 }

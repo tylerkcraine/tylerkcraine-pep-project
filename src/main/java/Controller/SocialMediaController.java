@@ -15,9 +15,11 @@ import io.javalin.http.Context;
  */
 public class SocialMediaController {
     AccountService accountService;
+    ObjectMapper mapper;
 
     public SocialMediaController() {
         this.accountService = new AccountService();
+        this.mapper = new ObjectMapper();
     }
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
@@ -28,6 +30,7 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
         app.post("register", this::registerPostHandler);
+        app.post("login", this::loginPostHandler);
 
         return app;
     }
@@ -43,15 +46,30 @@ public class SocialMediaController {
     /**
      * Endpoint handler for POST /register
      * @param context Javalin context object
+     * @throws JsonProcessingException
      */
     private void registerPostHandler(Context context) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Account account = mapper.readValue(context.body(), Account.class);
+        Account account = this.mapper.readValue(context.body(), Account.class);
         Account newAccount = this.accountService.createAccount(account);
         if (newAccount != null) {
             context.json(mapper.writeValueAsString(newAccount));
         } else {
             context.status(400);
+        }
+    }
+
+    /**
+     * 
+     * @param context Javalin context object
+     * @throws JsonProcessingException
+     */
+    private void loginPostHandler(Context context) throws JsonProcessingException {
+        Account account = this.mapper.readValue(context.body(), Account.class);
+        Account authenticAccount = this.accountService.authenticateAccount(account);
+        if (authenticAccount != null) {
+            context.json(mapper.writeValueAsString(authenticAccount));
+        } else {
+            context.status(401);
         }
     }
 
