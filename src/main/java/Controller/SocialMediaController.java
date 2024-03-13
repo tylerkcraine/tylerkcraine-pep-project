@@ -59,7 +59,7 @@ public class SocialMediaController {
     }
 
     /**
-     * 
+     * Endpoint handler for POST /login
      * @param context Javalin context object
      * @throws JsonProcessingException
      */
