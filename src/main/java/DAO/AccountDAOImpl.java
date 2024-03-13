@@ -63,5 +63,33 @@ public class AccountDAOImpl implements AccountDAO {
         }
         return null;
     }
+
+    /**
+     * Find account using the account id
+     * @param user_id account's user id
+     * @return returns Account representing the fetched account, null if not found or errored
+     */
+    @Override
+    public Account findAccountByUserId(int user_id) {
+        Connection con = Util.ConnectionUtil.getConnection();
+        String sql = "SELECT * FROM Account WHERE account_id = ?;";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, user_id);
+
+            ps.executeQuery();
+            ResultSet result = ps.getResultSet();
+            while (result.next()) {
+                int account_id = result.getInt("account_id");
+                String fetch_username = result.getString("username");
+                String password = result.getString("password");
+                return new Account(account_id, fetch_username, password);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
     
 }
