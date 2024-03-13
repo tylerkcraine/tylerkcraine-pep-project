@@ -9,6 +9,7 @@ import Service.AccountService;
 import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import java.util.ArrayList;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -33,6 +34,8 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
+        app.get("messages", this::messageGetAllHandler);
+
         app.post("register", this::registerPostHandler);
         app.post("login", this::loginPostHandler);
         app.post("messages",this::messagePostHandler);
@@ -93,4 +96,12 @@ public class SocialMediaController {
         }
     }
 
+    /**
+     * Endpaint handler for GET /messages
+     * @throws JsonProcessingException
+     */
+    private void messageGetAllHandler(Context context) throws JsonProcessingException {
+        ArrayList<Message> messageList = messageService.allMessages();
+        context.json(mapper.writeValueAsString(messageList));
+    }
 }

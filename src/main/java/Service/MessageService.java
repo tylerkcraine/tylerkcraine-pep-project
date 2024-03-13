@@ -1,5 +1,7 @@
 package Service;
 
+import java.util.ArrayList;
+
 import DAO.AccountDAOImpl;
 import DAO.MessageDAOImpl;
 import Model.Message;
@@ -26,5 +28,13 @@ public class MessageService {
         }
 
         return this.messageDAO.insertMessage(message);
+    }
+
+    /**
+     * simple service to return list of messages in database to handler
+     * @return ArrayList containing all messages in database
+     */
+    public ArrayList<Message> allMessages() {
+        return this.messageDAO.findAllMessages();
     }
 }

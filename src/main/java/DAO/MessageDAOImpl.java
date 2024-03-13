@@ -39,16 +39,31 @@ public class MessageDAOImpl implements MessageDAO {
         return null;
     }
 
+    /**
+     * a simple method to return all the messages in the message table
+     * @return ArrayList containing all the messages in the message table.
+     */
     @Override
     public ArrayList<Message> findAllMessages() {
-        // Connection con = Util.ConnectionUtil.getConnection();
-        // String sql = "SELECT * FROM message";
+        Connection con = Util.ConnectionUtil.getConnection();
+        String sql = "SELECT * FROM message";
+        ArrayList<Message> messageList = new ArrayList<Message>();
         
-        // try {
-        //     PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        //     ps.setInt(1, message.getPosted_by());
-        // }
-        return null;
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("message_id");
+                int accountId = rs.getInt("posted_by");
+                String messageText = rs.getString("message_text");
+                long dateEpoch = rs.getLong("time_posted_epoch");
+                messageList.add(new Message(id, accountId, messageText, dateEpoch));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return messageList;
     }
 
     @Override
