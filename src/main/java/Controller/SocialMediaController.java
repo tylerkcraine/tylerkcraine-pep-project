@@ -78,6 +78,11 @@ public class SocialMediaController {
         }
     }
 
+    /**
+     * Endpoint handler for POST /messages
+     * @param context Javalin context object
+     * @throws JsonProcessingException
+     */
     private void messagePostHandler(Context context) throws JsonProcessingException {
         Message message = this.mapper.readValue(context.body(), Message.class);
         Message postMessage = this.messageService.createMessage(message);
@@ -86,7 +91,6 @@ public class SocialMediaController {
         } else {
             context.status(400);
         }
-        
     }
 
 }
