@@ -42,6 +42,10 @@ public class SocialMediaController {
         app.post("login", this::loginPostHandler);
         app.post("messages", this::messagePostHandler);
 
+        app.patch("messages/{id}", this::messageUpdate);
+
+        app.delete("messages/{id}", this::messageDeleteWithId);
+
         return app;
     }
 
@@ -129,6 +133,35 @@ public class SocialMediaController {
         Message message = this.messageService.findMessageWithId(id);
         if (message != null) {
             context.json(mapper.writeValueAsString(message));
+        }
+    }
+
+    /**
+     * Endpoint handler for DELETE /messages/{id}
+     * @param context Javalin context object
+     * @throws JsonProcessingException
+     */
+    private void messageDeleteWithId(Context context) throws JsonProcessingException {
+        int id = Integer.parseInt(context.pathParam("id"));
+        Message message = this.messageService.deleteMessageWithId(id);
+        if (message != null) {
+            context.json(mapper.writeValueAsString(message));
+        }
+    }
+
+    /**
+     * Endpoint hander for PATCH /messages/{id}
+     * @param context Javalin context object
+     * @throws JsonProcessingException 
+     */
+    private void messageUpdate(Context context) throws JsonProcessingException {
+        int id = Integer.parseInt(context.pathParam("id"));
+        String message_text = this.mapper.readTree(context.body()).findValue("message_text").asText();
+        Message message = this.messageService.updateMessage(id, message_text);
+        if (message != null) {
+            context.json(mapper.writeValueAsString(message));
+        } else {
+            context.status(400);
         }
     }
 }

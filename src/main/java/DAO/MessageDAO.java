@@ -9,6 +9,6 @@ public interface MessageDAO {
     public ArrayList<Message> findAllMessages();
     public ArrayList<Message> findAllMessagesFromAccountId(int id);
     public Message findMessageWithId(int id);
-    public Message deleteMessageWithId(int id);
-    public Message updateMessageWithId(int id);
+    public boolean deleteMessageWithId(int id);
+    public boolean updateMessageWithId(int id, String message_text);
 }

@@ -100,7 +100,7 @@ public class MessageDAOImpl implements MessageDAO {
     /**
      * method to return a message with a message id
      * @param id message id to be queried
-     * @return message object representing the fetch message, null if not found
+     * @return message object representing the fetched message, null if not found
      */
     @Override
     public Message findMessageWithId(int id) {
@@ -125,16 +125,54 @@ public class MessageDAOImpl implements MessageDAO {
         return null;
     }
 
+    /**
+     * method to delete a message with a message id
+     * @param id message id to be deleted
+     * @return message object representing the fetched message, null if not found
+     */
     @Override
-    public Message deleteMessageWithId(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteMessageWithId'");
+    public boolean deleteMessageWithId(int id) {
+        Connection con = Util.ConnectionUtil.getConnection();
+        String sql = "DELETE * FROM message WHERE message_id = ?";
+        
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+
+            int result = ps.executeUpdate();
+            if (result > 0)
+                return true;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
     }
 
+    /**
+     * method to return a message with a message id
+     * @param id message id to be update
+     * @param message_text the new message body used to update
+     * @return message object representing the fetched message, null if not found
+     */    
     @Override
-    public Message updateMessageWithId(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateMessageWithId'");
+    public boolean updateMessageWithId(int id, String message_text) {
+        Connection con = Util.ConnectionUtil.getConnection();
+        String sql = "UPDATE message SET message_text = ? WHERE message_id = ?";
+        
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, message_text);
+            ps.setInt(2, id);
+
+            int affected = ps.executeUpdate();
+
+            if (affected > 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
     }
     
 }
