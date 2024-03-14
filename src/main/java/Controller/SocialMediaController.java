@@ -35,10 +35,12 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
         app.get("messages", this::messageGetAllHandler);
+        app.get("accounts/{account_id}/messages", this::messageGetWithAccountIdHandler);
+        app.get("messages/{id}", this::messageGetWithId);
 
         app.post("register", this::registerPostHandler);
         app.post("login", this::loginPostHandler);
-        app.post("messages",this::messagePostHandler);
+        app.post("messages", this::messagePostHandler);
 
         return app;
     }
@@ -97,11 +99,36 @@ public class SocialMediaController {
     }
 
     /**
-     * Endpaint handler for GET /messages
+     * Endpoint handler for GET /messages
+     * @param context Javalin context object
      * @throws JsonProcessingException
      */
     private void messageGetAllHandler(Context context) throws JsonProcessingException {
         ArrayList<Message> messageList = messageService.allMessages();
         context.json(mapper.writeValueAsString(messageList));
+    }
+
+    /**
+     * Endpoint handler for GET /accounts/{account_id}/messages
+     * @param context Javalin context object
+     * @throws JsonProcessingException
+     */
+    private void messageGetWithAccountIdHandler(Context context) throws JsonProcessingException {
+        int account_id = Integer.parseInt(context.pathParam("account_id"));
+        ArrayList<Message> messageList = messageService.allMessagesWithAccountId(account_id);
+        context.json(mapper.writeValueAsString(messageList));
+    }
+
+    /**
+     * Endpoint handler for GET /messages/{id}
+     * @param context Javalin context object
+     * @throws JsonProcessingException
+     */
+    private void messageGetWithId(Context context) throws JsonProcessingException {
+        int id = Integer.parseInt(context.pathParam("id"));
+        Message message = this.messageService.findMessageWithId(id);
+        if (message != null) {
+            context.json(mapper.writeValueAsString(message));
+        }
     }
 }

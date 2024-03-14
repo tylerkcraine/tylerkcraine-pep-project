@@ -31,10 +31,26 @@ public class MessageService {
     }
 
     /**
-     * simple service to return list of messages in database to handler
+     * simple service to return list of messages in the database to handler
      * @return ArrayList containing all messages in database
      */
     public ArrayList<Message> allMessages() {
         return this.messageDAO.findAllMessages();
+    }
+
+    /**
+     * simple service to return list of messages with a certain poster in the database to handler
+     * @return ArrayList containing all messages in database
+     */
+    public ArrayList<Message> allMessagesWithAccountId(int id) {
+        return this.messageDAO.findAllMessagesFromAccountId(id);
+    }
+
+    /**
+     * simple service to return a message with the provided message id
+     * @return Message object representing the fetched message
+     */
+    public Message findMessageWithId(int id) {
+        return this.messageDAO.findMessageWithId(id);
     }
 }

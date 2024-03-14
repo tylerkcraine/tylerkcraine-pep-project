@@ -66,16 +66,63 @@ public class MessageDAOImpl implements MessageDAO {
         return messageList;
     }
 
+
+    /**
+     * a method to return all the messages in the message table that belong to an account id
+     * @param id Account id to be searched for
+     * @return ArrayList containing all the messages in the message table that belong to the mentioned account_id. list is empty if none found
+     */ 
     @Override
     public ArrayList<Message> findAllMessagesFromAccountId(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAllMessagesFromAccountId'");
+        Connection con = Util.ConnectionUtil.getConnection();
+        String sql = "SELECT * FROM message WHERE posted_by = ?";
+        ArrayList<Message> messageList = new ArrayList<Message>();
+        
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int result_id = rs.getInt("message_id");
+                int accountId = rs.getInt("posted_by");
+                String messageText = rs.getString("message_text");
+                long dateEpoch = rs.getLong("time_posted_epoch");
+                messageList.add(new Message(result_id, accountId, messageText, dateEpoch));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return messageList;
     }
 
+
+    /**
+     * method to return a message with a message id
+     * @param id message id to be queried
+     * @return message object representing the fetch message, null if not found
+     */
     @Override
     public Message findMessageWithId(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findMessageWithId'");
+        Connection con = Util.ConnectionUtil.getConnection();
+        String sql = "SELECT * FROM message WHERE message_id = ?";
+        
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int result_id = rs.getInt("message_id");
+                int accountId = rs.getInt("posted_by");
+                String messageText = rs.getString("message_text");
+                long dateEpoch = rs.getLong("time_posted_epoch");
+                return new Message(result_id, accountId, messageText, dateEpoch);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     @Override
