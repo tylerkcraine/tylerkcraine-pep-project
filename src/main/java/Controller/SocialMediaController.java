@@ -43,7 +43,6 @@ public class SocialMediaController {
         app.post("messages", this::messagePostHandler);
 
         app.patch("messages/{id}", this::messageUpdate);
-
         app.delete("messages/{id}", this::messageDeleteWithId);
 
         return app;
